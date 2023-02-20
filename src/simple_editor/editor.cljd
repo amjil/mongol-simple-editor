@@ -1,0 +1,41 @@
+(ns simple-editor.editor
+  (:require
+   ["package:flutter/material.dart" :as m]
+   [virtual-keyboard.keyboard :as keyboard]
+   [virtual-keyboard.options :as koptions]))
+
+(defn body []
+  (f/widget
+   :context ctx
+   :get [:text-controller]
+   :let [width  (-> m/MediaQuery (.of ctx) .-size .-width)
+         height (-> m/MediaQuery (.of ctx) .-size .-height)
+         info (merge koptions/keyboard-option keyboard-style {:width width})
+         state (atom koptions/keyboard-state)]
+   :bind {:info info :state state :text-controller text-controller :context ctx}
+   :watch [{:keys [candidates-list]} state]
+   (m/SafeArea)
+   .child
+   (m/Center)
+   .child
+   (m/Stack)
+   .children
+   [(m/Column
+     .children
+     [(m/Expanded
+       .child
+       (mgl/MongolTextField
+        .controller text-controller
+        .maxLines 500
+        .autofocus true
+        .onTap (fn []
+                 (swap! state assoc :candidates-list [])
+                 (dart:core/print "onTap TextField"))
+        .showCursor true
+        .readOnly true
+        .style (m/TextStyle .fontSize 26)
+        .decoration (m/InputDecoration .border (m/OutlineInputBorder))))
+      (m/Container
+       .color (-> m/Colors .grey .-shade300)
+       .child
+       (keyboard/keyboard))])]))
