@@ -1,0 +1,28 @@
+(ns simple-editor.utils.color
+  (:require 
+   ["package:flutter/material.dart" :as m]))
+
+
+(defn ^m/Color string-to-color [s ^m/Color original]
+  (condp = s
+    "transparent"
+    m.Colors/transparent
+
+    "black" m.Colors/black
+    "black12" m.Colors/black12
+    "black26" m.Colors/black26
+    "black38" m.Colors/black38
+    "black45" m.Colors/black45
+    "black54" m.Colors/black54
+    "black87" m.Colors/black87
+    "white" m.Colors/white
+    "white10" m.Colors/white10
+    "white12" m.Colors/white12
+    "white24" m.Colors/white24
+    "white30" m.Colors/white30
+    "white38" m.Colors/white38
+    "white54" m.Colors/white54
+    "white60" m.Colors/white60
+    "white70" m.Colors/white70
+
+    :else nil))
