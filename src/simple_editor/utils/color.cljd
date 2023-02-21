@@ -24,5 +24,39 @@
     "white54" m.Colors/white54
     "white60" m.Colors/white60
     "white70" m.Colors/white70
+    "red" m.Colors/red
+    "redAccent" m.Colors/redAccent
+    "amber" m.Colors/amber
+    "amberAccent" m.Colors/amberAccent
+    "yellow" m.Colors/yellow
+    "yellowAccent" m.Colors/yellowAccent
+    "teal" m.Colors/teal
+    "tealAccent" m.Colors/tealAccent
+    "purple" m.Colors/purple
+    "purpleAccent" m.Colors/purpleAccent
+    "pink" m.Colors/pink
+    "pinkAccent" m.Colors/pinkAccent
+    "orange" m.Colors/orange
+    "orangeAccent" m.Colors/orangeAccent
+    "deepOrange" m.Colors/deepOrange
+    "deepOrangeAccent" m.Colors/deepOrangeAccent
+    "indigo" m.Colors/indigo
+    "indigoAccent" m.Colors/indigoAccent
+    "lime" m.Colors/lime
+    "limeAccent" m.Colors/limeAccent
+    "grey" m.Colors/grey
+    "blueGrey" m.Colors/blueGrey
+    "green" m.Colors/green
+    "greenAccent" m.Colors/greenAccent
+    "lightGreen" m.Colors/lightGreen
+    "lightGreenAccent" m.Colors/lightGreenAccent
+    "blue" m.Colors/blue
+    "blueAccent" m.Colors/blueAccent
+    "lightBlue" m.Colors/lightBlue
+    "lightBlueAccent" m.Colors/lightBlueAccent
+    "cyan" m.Colors/cyan
+    "cyanAccent" m.Colors/cyanAccent
+    "brown" m.Colors/brown
 
-    :else nil))
+    :else nil
+    ))
