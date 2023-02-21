@@ -21,19 +21,19 @@
       ;;  .style (m/TextStyle
       ;;          .color m.Colors/blue
       ;;          .fontSize 32.0))
-      (mgl.MongolText/rich 
-       .textSpan 
-       (m/TextSpan
-        .style (m/TextStyle .fontSize 30 .color (.black m/Colors))
-        .children
-        [(m/TextSpan .text "ᠨᠢᠭᠡ\\n" .style (m/TextStyle .fontSize 40))
-         (m/TextSpan .text "ᠬᠣᠶᠠᠷ"
-                     .style (m/TextStyle .backgroundColor (.yellow m/Colors)))
-         (m/TextSpan .text " ᠭᠤᠷᠪᠠ "
-                     .style (m/TextStyle .shadows
-                                         [(m/Shadow .blurRadius 3
-                                                    .color (.lightGreen m/Colors)
-                                                    .offset (m/Offset 3 -3))]))]))
+      (.rich mgl/MongolText
+             (m/TextSpan
+              .style (m/TextStyle .fontSize 30 .color (.black m/Colors))
+              .children
+              [(m/TextSpan .text "ᠨᠢᠭᠡ\n" .style (m/TextStyle .fontSize 40))
+               (m/TextSpan .text "ᠬᠣᠶᠠᠷ"
+                           .style (m/TextStyle .backgroundColor (.yellow m/Colors)))
+               (m/TextSpan .text " ᠭᠤᠷᠪᠠ "
+                           .style (m/TextStyle .shadows
+                                               [(m/Shadow .blurRadius 3
+                                                          .color (.lightGreen m/Colors)
+                                                          .offset (m/Offset 3 -3))]))])
+             .textScaleFactor 2.5)
       )
      )
     .debugShowCheckedModeBanner false)))
