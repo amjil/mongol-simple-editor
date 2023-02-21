@@ -4,3 +4,14 @@
 
 (def font-name "MongolianBaiZheng")
 
+(def text-line-options 
+  [:line 
+   :embedBuilder 
+   :styles 
+   :read-only
+   :controller
+   :on-launch-url
+   :link-action-picker
+   :text-direction
+   :custom-style-builder])
+
