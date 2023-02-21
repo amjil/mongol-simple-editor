@@ -3,8 +3,9 @@
         tensegritics/clojuredart
         {:git/url "https://github.com/tensegritics/ClojureDart.git"
          :sha "b49414d81467e5fb4e70cef1a64ea390e54cee0d"}
-        amjil/mongol-menu-bar
-        {:local/root "../mongol-virtual-keyboard"}}
+        ;amjil/mongol-menu-bar
+        ;{:local/root "../mongol-virtual-keyboard"}
+}
        
  :aliases {:cljd {:main-opts ["-m" "cljd.build"]}}
  :cljd/opts {:kind :flutter
