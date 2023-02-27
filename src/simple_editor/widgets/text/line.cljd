@@ -5,17 +5,24 @@
 ;; copied from https://github.com/suragch/mongol and convert to clojuredart
 (declare is-rotatable)
 
-(defn draw 
+(defn draw
   [^m/Canvas canvas line]
   ;; line = {:text "" :start 1 :end 1 :ui-paragraph nil}
-  nil)
+  (.save canvas)
+
+  (for [x line]
+    (do
+      (.run (:run x) canvas (m/Offset 0 0))
+      (.translate canvas (.width (:run x)) 0)))
+
+  (.restore canvas))
 
 (defn line-breaks
   [breaked-text height]
   (loop [line-result []
          cursor 0
          current-height 0
-         current-text ""]
+         current-text []]
     (if (= cursor (count breaked-text))
       line-result
       (let [cursor-text (nth breaked-text cursor)]
@@ -24,13 +31,13 @@
           (recur (conj line-result current-text)
                  (inc cursor)
                  0
-                 "")
+                 [])
 
           :else
           (recur line-result
                  (inc cursor)
                  (+ current-height (:height cursor-text))
-                 (str current-text cursor-text)))))))
+                 (conj current-text cursor-text)))))))
 
 (defn text-breaks 
   [text]
