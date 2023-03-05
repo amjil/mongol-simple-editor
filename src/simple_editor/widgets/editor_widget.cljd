@@ -1,0 +1,46 @@
+(ns simple-editor.widgets.editor-widget
+  (:require
+   ["package:flutter/material.dart" :as m]
+   ["package:flutter/services.dart" :as services]
+   ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]
+   [cljd.flutter.alpha2 :as f]
+   ["dart:async" :as a]
+   [simple-editor.widgets.editor-widget :as editor-widget]))
+
+(defn editor-widget2 [m]
+  (m/Text "abcd"))
+
+(defn editor-widget
+  [{:keys [controller
+           callbacks
+           plugins
+           editor-options
+           toolbar-options
+           other-options]}]
+  (f/widget
+   :let [file-path "assets/editor.html"
+         doc-height (:height other-options)
+         html-controller nil]
+   (m/GestureDetector
+    .onTap (fn []
+             (-> services/SystemChannels
+                 .textInput
+                 (.invokeMethod "TextInput.hide"))
+             nil))
+   (m/Container
+    .height doc-height
+    .decoration (:decoration other-options))
+   (webview/InAppWebView
+    .initialFile file-path
+    .onWebViewCreated (fn [^webview/InAppWebViewController inapp-controller]
+                        ;; (set! (.-editorController html-controller) controller)
+                        nil
+                        ;;
+                        (.addJavaScriptHandler
+                         inapp-controller
+                         .handlerName "FormatSettings"
+                         .callback (fn [e]
+                                     (let [json (get e 0)]
+                                       (print json)
+                                       (when (not= (-> controller .toolbar) nil)
+                                         (-> controller .toolbar (.updateToolbar json))))))))))

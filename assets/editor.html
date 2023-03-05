@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+  <link href="quill.snow.min.css" rel="stylesheet">
+  <!-- Include the Quill library -->
+  <script src="quill.min.js"></script>
+  <style>
+    @font-face {
+       font-family: 'MongolianBaiZheng';
+       src: local('MongolianBaiZheng'), url('fonts/MongolianBaiZheng.ttf');
+    }
+    html,body {
+      height: 100%;
+      /* width: 100%; */
+      margin: 0;
+      padding: 0;
+      background-color:rgba(0, 0, 0, 0);
+      writing-mode: vertical-lr;
+      -webkit-text-orientation: sideways-right;
+      font-family: MongolianBaiZheng;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    #editor {
+      /* height: calc(100% - 42px); */
+      background-color:rgba(0, 0, 0, 0);
+    }
+
+    #toolbar-container{
+        display:none;
+    } 
+  </style>
+</head> 
+
+<body>
+    <!-- Create the toolbar container -->
+    <div id="toolbar-container"></div>
+    <div id="editor">
+        Hello Man!
+    </div>
+    <script>
+      
+      const Inline = Quill.import('blots/inline');
+      class RequirementBlot extends Inline {}
+      RequirementBlot.blotName = 'requirement';
+      RequirementBlot.tagName = 'requirement';
+      Quill.register(RequirementBlot);
+      
+      class ResponsibilityBlot extends Inline {}
+      ResponsibilityBlot.blotName = 'responsibility';
+      ResponsibilityBlot.tagName = 'responsibility';
+      Quill.register(ResponsibilityBlot);
+      
+      const quill = new Quill('#editor', window.options);
+      var quilleditor = new Quill('#editor', {
+            modules: {
+              toolbar: '#toolbar-container',
+              table: true,
+            },
+            theme: 'snow',
+            placeholder: 'Type here somthing'
+            // clipboard: {
+            //   matchVisual: true
+            // }
+      });
+      const table = quilleditor.getModule('table');
+
+      
+
+      //quilleditor.enable(false);
+  </script>
+</body>
+</html>
