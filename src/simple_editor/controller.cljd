@@ -1,0 +1,27 @@
+(ns simple-editor.controller
+  (:require 
+   ["package:flutter/material.dart" :as m]
+   ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]))
+
+(def options
+  (atom
+   {:process-input-html true
+    :process-new-line-as-br true
+    :process-output-html true}))
+
+(defn eval-javascript 
+  [^webview/InAppWebViewController controller source]
+  (if (or (nil? controller) (await (.isLoading controller)))
+    (throw (Exception "HTML editor is still loading, please wait")))
+  (await
+   (.evaluateJavascript
+    controller
+    .source source)))
+
+(defn clear-focus
+  []
+  (-> m/SystemChannels
+      .textInput
+      (.invokeMethod "TextInput.hide")))
+
+
