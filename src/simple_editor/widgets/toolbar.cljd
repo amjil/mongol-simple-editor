@@ -1,0 +1,5 @@
+(ns simple-editor.widgets.toolbar)
+
+(defn widget 
+  [controller toolbar-options callbacks]
+  nil)

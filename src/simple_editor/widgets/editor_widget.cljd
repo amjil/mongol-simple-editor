@@ -4,8 +4,7 @@
    ["package:flutter/services.dart" :as services]
    ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]
    [cljd.flutter.alpha2 :as f]
-   ["dart:async" :as a]
-   [simple-editor.widgets.editor-widget :as editor-widget]))
+   ["dart:async" :as a]))
 
 (defn editor-widget2 [m]
   (m/Text "abcd"))
@@ -18,9 +17,11 @@
            toolbar-options
            other-options]}]
   (f/widget
+   :context ctx
    :let [file-path "assets/editor.html"
          doc-height (:height other-options)
-         html-controller nil]
+         html-controller nil
+         _ (dart:core/print (str "init callbacks = " callbacks))]
    (m/GestureDetector
     .onTap (fn []
              (-> services/SystemChannels
@@ -34,8 +35,6 @@
     .initialFile file-path
     .onWebViewCreated (fn [^webview/InAppWebViewController inapp-controller]
                         ;; (set! (.-editorController html-controller) controller)
-                        nil
-                        ;;
                         (.addJavaScriptHandler
                          inapp-controller
                          .handlerName "FormatSettings"
@@ -43,4 +42,54 @@
                                      (let [json (get e 0)]
                                        (print json)
                                        (when (not= (-> controller .toolbar) nil)
-                                         (-> controller .toolbar (.updateToolbar json))))))))))
+                                         (-> controller .toolbar (.updateToolbar json))))))
+
+                        (.addJavaScriptHandler
+                         inapp-controller
+                         .handlerName "onChangeContent"
+                         .callback (fn [contents]
+                                     (dart:core/print "in callbacks on-change-content .... >>> ")
+                                    ;;  ((:on-change-content callbacks)
+                                    ;;   (-> contents .first .toString))
+                                     ))
+                        nil)
+    .initialOptions (webview/InAppWebViewGroupOptions
+                     .crossPlatform (webview/InAppWebViewOptions
+                                     .javaScriptEnabled true
+                                     .transparentBackground true
+                                     .useShouldOverrideUrlLoading true)
+                     .android (webview/AndroidInAppWebViewOptions
+                               .useHybridComposition (or (:androidUseHybridComposition editor-options) true)
+                               .loadWithOverviewMode true)
+                     .ios (webview/IOSInAppWebViewOptions
+                           .allowsInlineMediaPlayback true))
+    ;; .initialUserScripts (:mobile-initial-scripts editor-options)
+    ;; .contextMenu (:context-menu editor-options)
+    .onConsoleMessage  (fn [_controller message]
+                         (dart:core/print (.message message)))
+    .onWindowFocus (fn [_controller]
+                     (if (and (:should-ensure-visible editor-options)
+                              (some? (.of m/Scrollable ctx)))
+                       (let [^m/ScrollableState scrollable (.of m/Scrollable ctx)
+                             ^m/ScrollPosition position (.-position scrollable)]
+                         (.ensureVisible position (.findRenderObject ctx))
+                         nil)))
+    .onLoadStop (fn [^webview/InAppWebViewController inapp-controller uri]
+                  (let [url (.toString uri)]
+                    (dart:core/print "in onchange set fun >>>> start")
+                    (when (.contains url file-path)
+                      (dart:core/print "in onchange set fun >>>> ")
+                      ;; onChangeContent
+                      (await 
+                       (.evaluateJavascript
+                        inapp-controller
+                        .source "
+                                alert('abc');
+                                // quilleditor.on('text-change', function(eventName, ...args) {
+                                //   window.flutter_inappwebview.callHandler('onChangeContent', quilleditor.root.innerHTML);
+                                // }); 
+                                 ")))
+                    (dart:core/print "in onchange set fun >>>> end")
+                    nil))
+    ))
+)

@@ -4,8 +4,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
   <link href="quill.snow.min.css" rel="stylesheet">
-  <!-- Include the Quill library -->
-  <script src="quill.min.js"></script>
+  <!-- <link href="quill-cursors.css" rel="stylesheet"> -->
   <style>
     @font-face {
        font-family: 'MongolianBaiZheng';
@@ -38,8 +37,12 @@
     <!-- Create the toolbar container -->
     <div id="toolbar-container"></div>
     <div id="editor">
-        Hello Man!
+        Hey Man! eeee
     </div>
+    <!-- Include the Quill library -->
+    <script src="quill.min.js"></script>
+    <script src="quill-cursors.js"></script>
+
     <script>
       
       const Inline = Quill.import('blots/inline');
@@ -52,12 +55,20 @@
       ResponsibilityBlot.blotName = 'responsibility';
       ResponsibilityBlot.tagName = 'responsibility';
       Quill.register(ResponsibilityBlot);
+
+      Quill.register('modules/cursors', QuillCursors);
       
-      const quill = new Quill('#editor', window.options);
       var quilleditor = new Quill('#editor', {
             modules: {
               toolbar: '#toolbar-container',
               table: true,
+              // cursors: true,
+              cursors: {
+                transformOnTextChange: true,
+                // autoRegisterListener: true,
+                selectionChangeSource: null,
+                transformOnTextChange: true
+              }
             },
             theme: 'snow',
             placeholder: 'Type here somthing'
@@ -67,9 +78,21 @@
       });
       const table = quilleditor.getModule('table');
 
+      // quilleditor.enable(false);
       
+      const cursor = quilleditor.getModule('cursors');
+      cursor.createCursor('cursor', '', 'blue');
+      
+      
+      function selectionChangeHandler(cursors) {
 
-      //quilleditor.enable(false);
+        return function(range, oldRange, source) {
+          cursors.moveCursor('cursor', range);
+        }
+      };
+
+      quilleditor.on('selection-change', selectionChangeHandler(cursor));
+
   </script>
 </body>
 </html>
