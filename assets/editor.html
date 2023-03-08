@@ -80,19 +80,9 @@
 
       // quilleditor.enable(false);
       
-      const cursor = quilleditor.getModule('cursors');
-      cursor.createCursor('cursor', '', 'blue');
       
+
       
-      function selectionChangeHandler(cursors) {
-
-        return function(range, oldRange, source) {
-          cursors.moveCursor('cursor', range);
-        }
-      };
-
-      quilleditor.on('selection-change', selectionChangeHandler(cursor));
-
   </script>
 </body>
 </html>

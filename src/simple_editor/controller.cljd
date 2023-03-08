@@ -1,6 +1,7 @@
 (ns simple-editor.controller
   (:require 
    ["package:flutter/material.dart" :as m]
+   ["package:flutter/services.dart" :as services]
    ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]))
 
 (def options
@@ -20,7 +21,7 @@
 
 (defn clear-focus
   []
-  (-> m/SystemChannels
+  (-> services/SystemChannels
       .textInput
       (.invokeMethod "TextInput.hide")))
 
