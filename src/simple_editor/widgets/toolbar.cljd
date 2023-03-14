@@ -1,5 +1,177 @@
-(ns simple-editor.widgets.toolbar)
+(ns simple-editor.widgets.toolbar
+  (:require
+   ["package:flutter/material.dart" :as m]
+   ["package:pointer_interceptor/pointer_interceptor.dart" :as pi]
+   ["package:dropdown_button2/src/dropdown_button2.dart" :as dropdown]
+   ["package:mongol/mongol.dart" :as mgl]
+   [cljd.flutter.alpha2 :as f]))
 
-(defn widget 
-  [controller toolbar-options callbacks]
-  nil)
+(declare toolbar-children)
+
+;; (defn native-grid-widget [enabled options state]
+;;   (f/widget
+;;    (pi/PointerInterceptor)
+;;    (m/AbsorbPointer
+;;     .absorbing (not enabled))
+;;    (m/Opacity
+;;     .opacity (if (true? enabled) 1 0.5))
+;;    (m/Padding
+;;     .padding (.all m/EdgeInsets 5))
+;;    (m/Wrap
+;;     .runSpacing (:grid-view-vertical-spacing options)
+;;     .spacing (:grid-view-horizontal-spacing options)
+;;     .children (toolbar-children options state))))
+
+(defn native-scroll-widget [enabled options state]
+  (f/widget
+   (pi/PointerInterceptor)
+   (m/AbsorbPointer
+    .absorbing (not enabled))
+   (m/Opacity
+    .opacity (if (true? enabled) 1 0.5))
+   (m/Container
+    .width (+ 15 (:toolbar-item-width options)))
+   (m/Padding
+    .padding (.all m/EdgeInsets 5))
+   (m/CustomScrollView
+    .scrollDirection (.vertical m/Axis)
+    .slivers
+    [(m/SliverFillRemaining
+      .hasScrollBody false
+      .child
+      (m/Column
+       .mainAxisAlignment (.spaceEvenly m/MainAxisAlignment)
+       .children (toolbar-children options state)
+      ;;  [(m/Text "aa") (m/Text "bb")]
+       ))])))
+
+;; (defn widget [_ _]
+;;   (m/Text "abc"))
+
+(defn widget
+  [options callbacks]
+  (f/widget
+   :let [state (atom {:enabled true
+                      :format "p"})]
+   :watch [{:keys [enabled]} state]
+  ;;  (if (= :native-grid (:toolbar-type options))
+  ;;    (native-grid-widget enabled options state)
+  ;;    (native-scroll-widget enabled options state))
+   (native-scroll-widget enabled options state)
+   ))
+
+(defn toolbar-item-container 
+  [options child]
+  (f/widget
+   :context context
+   (m/Container
+    .padding (.only m/EdgeInsets .left 8)
+    .width (:toolbar-item-width options)
+    .decoration (if (:render-border options)
+                  (or (:dropdown-box-decoration options)
+                      (m/BoxDecoration
+                       .color (-> m/Theme (.of context) .-scaffoldBackgroundColor)
+                       .border (.all m/Border
+                                     .color
+                                     (-> m/Theme (.of context) .-colorScheme 
+                                         .-onSurface
+                                         (.withOpacity 0.12))))))
+    .child child)))
+
+(defn toolbar-dropdown-button 
+  [options items state skey]
+  (f/widget
+   :watch [{selected skey} state]
+   (toolbar-item-container
+    options
+    (m/DropdownButtonHideUnderline
+     .child
+     (dropdown/DropdownButton2
+      .items items
+      .value selected
+      .onChanged (fn [v]
+                   (swap! state assoc skey v))
+      ;; .hint 
+      .buttonStyleData
+      (dropdown/ButtonStyleData
+      ;;  .elevation (:dropdown-button-elevation options)
+       .width (:dropdown-button-width options)
+       .height (:dropdown-button-height options)
+       .padding (:dropdown-button-padding options))
+      .dropdownStyleData
+       (dropdown/DropdownStyleData
+         .maxWidth (:dropdown-style-max-width options)
+         .height (:dropdown-style-height options)
+        ;;  .offset (:dropdown-style-offset options)
+         )
+      .iconStyleData
+      (dropdown/IconStyleData
+       .icon (or (:dropdown-icon options)
+                 (m/Icon (.arrow_back_ios_new_outlined m/Icons)))
+       .iconSize (or (:dropdown-icon-size options) 
+                     14))
+      .menuItemStyleData
+      (dropdown/MenuItemStyleData
+       .width (or (:dropdown-item-width options)
+                  40)))))))
+
+(defn toolbar-children
+  [options state]
+  [(toolbar-item-container
+    options 
+    (toolbar-dropdown-button
+     options
+     [(m/DropdownMenuItem
+       .value "p"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Normal")))
+      (m/DropdownMenuItem
+       .value "blockquote"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child
+               (m/Container
+                .decoration (m/BoxDecoration .border
+                                             (m/Border .top
+                                                       (m/BorderSide .color (.grey m/Colors) .width 3)))
+                .padding (.symmetric m/EdgeInsets .horizontal 10)
+                .child (mgl/MongolText "Quote"
+                                       .style (m/TextStyle .fontFamily "times" .color (.grey m/Colors))))))
+      (m/DropdownMenuItem
+       .value "h2"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Header 2"
+                                      .style (m/TextStyle .fontWeight
+                                                          (.bold m/FontWeight) .fontSize 24))))
+      (m/DropdownMenuItem
+       .value "h3"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Header 3"
+                                      .style (m/TextStyle .fontWeight
+                                                          (.bold m/FontWeight) .fontSize 18))))
+      (m/DropdownMenuItem
+       .value "h4"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Header 4"
+                                      .style (m/TextStyle .fontWeight
+                                                          (.bold m/FontWeight) .fontSize 16))))
+      (m/DropdownMenuItem
+       .value "h5"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Header 5"
+                                      .style (m/TextStyle .fontWeight
+                                                          (.bold m/FontWeight) .fontSize 13))))
+      (m/DropdownMenuItem
+       .value "h6"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText "Header 6"
+                                      .style (m/TextStyle .fontWeight
+                                                          (.bold m/FontWeight) .fontSize 11))))
+      ]
+     state :format))])
