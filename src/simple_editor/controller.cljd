@@ -25,4 +25,33 @@
       .textInput
       (.invokeMethod "TextInput.hide")))
 
+(defn disable
+  [^webview/InAppWebViewController controller]
+  (eval-javascript controller 
+                   "quilleditor.enable(false);"))
 
+(defn enable
+  [^webview/InAppWebViewController controller]
+  (eval-javascript controller
+                   "quilleditor.enable(ture);"))
+
+;; history
+(defn undo 
+  [^webview/InAppWebViewController controller]
+  (eval-javascript controller
+                   "quilleditor.history.undo();"))
+
+(defn redo 
+  [^webview/InAppWebViewController controller]
+  (eval-javascript controller
+                   "quilleditor.history.redo();"))
+
+;; text
+(defn clear
+  [^webview/InAppWebViewController controller]
+  (eval-javascript controller
+                   "quilleditor.history.redo();"))
+
+(defn set-format 
+  []
+  nil)

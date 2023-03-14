@@ -39,6 +39,10 @@ dependencies:
   mongol: ^4.0.0
   flutter_inappwebview: ^5.7.2+3
   visibility_detector: ^0.3.3
+  pointer_interceptor: ^0.9.3+4
+  numberpicker: ^2.1.1
+  dropdown_button2:
+    path: ../mongol-dropdown-button/
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +71,7 @@ flutter:
     - assets/quill.min.js
     - assets/quill-cursors.js
     - assets/quill.snow.min.css
+    - assets/fonts/MongolianBaiZheng.ttf
 
 
   # To add assets to your application, add an assets section, like this:
