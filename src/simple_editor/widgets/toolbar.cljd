@@ -6,7 +6,8 @@
    ["package:mongol/mongol.dart" :as mgl]
    [cljd.flutter.alpha2 :as f]))
 
-(declare toolbar-children)
+(declare toolbar-children
+         toogle-buttons)
 
 ;; (defn native-grid-widget [enabled options state]
 ;;   (f/widget
@@ -30,7 +31,8 @@
    (m/Opacity
     .opacity (if (true? enabled) 1 0.5))
    (m/Container
-    .width (+ 15 (:toolbar-item-width options)))
+    .width ;(+ 15 (:toolbar-item-width options)))
+    (+ 0 (:toolbar-item-width options)))
    (m/Padding
     .padding (.all m/EdgeInsets 5))
    (m/CustomScrollView
@@ -52,7 +54,11 @@
   [options callbacks]
   (f/widget
    :let [state (atom {:enabled true
-                      :format "p"})]
+                      :format "p"
+                      :font-family "Courier New"
+                      :font-size 16
+                      :font [false false false false]
+                      :misc-font [false false false]})]
    :watch [{:keys [enabled]} state]
   ;;  (if (= :native-grid (:toolbar-type options))
   ;;    (native-grid-widget enabled options state)
@@ -118,7 +124,7 @@
 (defn toolbar-children
   [options state]
   [(toolbar-item-container
-    options 
+    options
     (toolbar-dropdown-button
      options
      [(m/DropdownMenuItem
@@ -172,6 +178,129 @@
        .child (pi/PointerInterceptor
                .child (mgl/MongolText "Header 6"
                                       .style (m/TextStyle .fontWeight
-                                                          (.bold m/FontWeight) .fontSize 11))))
-      ]
-     state :format))])
+                                                          (.bold m/FontWeight) .fontSize 11))))]
+     state :format))
+   (toolbar-item-container
+    options
+    (toolbar-dropdown-button
+     options
+     [(m/DropdownMenuItem
+       .value "Courier New"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       "Courier New"
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value "sans-serif"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       "Sans Serif"
+                       .style (m/TextStyle .fontFamily "sans-serif"))))
+      (m/DropdownMenuItem
+       .value "Times New Roman"
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       "Times New Roman"
+                       .style (m/TextStyle .fontFamily "Times"))))]
+     state :font-family))
+   (toolbar-item-container
+    options
+    (toolbar-dropdown-button
+     options
+     [(m/DropdownMenuItem
+       .value 11
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 11 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 13
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 13 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 16
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 16 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 19
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 19 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 24
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 24 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 32
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 32 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))
+      (m/DropdownMenuItem
+       .value 48
+       .alignment m.AlignmentDirectional/topCenter
+       .child (pi/PointerInterceptor
+               .child (mgl/MongolText
+                       (str 48 " px")
+                       .style (m/TextStyle .fontFamily "Courier"))))]
+     state :font-size))
+   (toggle-buttons
+    options state :font [(m/Icon (.format_bold m/Icons))
+                         (m/Icon (.format_italic m/Icons))
+                         (m/Icon (.format_underline m/Icons))
+                         (m/Icon (.format_clear m/Icons))])
+   (toggle-buttons
+    options state :misc-font [(m/Icon (.format_strikethrough m/Icons))
+                              (m/Icon (.superscript m/Icons))
+                              (m/Icon (.subscript m/Icons))])
+   ])
+
+(defn toggle-buttons 
+  [options state skey group-items]
+  (f/widget
+   :watch [{font skey} state]
+   (m/ToggleButtons
+    .direction m.Axis/vertical
+    .constraints
+    (.tightFor m/BoxConstraints
+               .width (- (:toolbar-item-width options) 28)
+               .height (- (:toolbar-item-width options) 28))
+    .color (:toolbar-button-color options)
+    .selectedColor (:toolbar-button-selected-color options)
+    .fillColor (:toolbar-button-fill-color options)
+    .focusColor (:toolbar-button-focus-color options)
+    .highlightColor (:toolbar-button-hightlight-color options)
+    .hoverColor (:toolbar-button-hovor-color options)
+    .splashColor (:toolbar-button-splash-color options)
+    .selectedBorderColor (:toolbar-button-selected-border-color options)
+    .borderColor (:toolbar-button-border-color options)
+    .borderRadius (:toolbar-button-border-radius options)
+    .borderWidth (:toolbar-button-border-width options)
+    .renderBorder (or (:toolbar-button-render-border options) false)
+    ;; .textStyle (:toolbar-text-style options)
+    .onPressed (fn [i]
+                 (dart:core/print (str "onPressed >>> " i))
+                 (swap! state assoc skey (assoc
+                                         (get @state skey)
+                                         i
+                                         (not
+                                          (get-in @state [skey i])))))
+    .isSelected font 
+    .children group-items)))
+
