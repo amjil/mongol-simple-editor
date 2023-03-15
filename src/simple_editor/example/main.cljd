@@ -2,7 +2,8 @@
   (:require
    ["package:flutter/material.dart" :as m]
    ["package:mongol/mongol.dart" :as mgl]
-   [simple-editor.widgets.editor-widget :as editor-widget]))
+   [simple-editor.widgets.editor-widget :as editor-widget]
+   [simple-editor.widgets.toolbar :as toolbar]))
 
 (defn main []
   (m.WidgetsFlutterBinding/ensureInitialized)
@@ -16,15 +17,24 @@
      .appBar (m/AppBar
               .title (m/Text "Mongolian Simple Editor"))
      .body
-     (m/Center
+     (m/Align
+      .alignment m.Alignment/centerLeft
       .child
       ;; (mgl/MongolText
       ;;  " ᠳᠠᠶᠠᠭᠠᠷ ᠰᠠᠶ᠋ᠢᠨ ᠪᠠᠶ᠋ᠢᠨ᠎ᠠ ᠊ᠤᠤ?"
       ;;  .style (m/TextStyle
       ;;          .color m.Colors/blue
       ;;          .fontSize 32.0))
-      (editor-widget/editor-widget 
-       {:callbacks {:on-change-content #(dart:core/print (str "<<< content = " %))}})
+      ;;  (editor-widget/editor-widget
+      ;;              {:callbacks {:on-change-content ^Function #(dart:core/print (str "<<< content = " %))}
+      ;;               :editor-options {:height 300}})
+      (toolbar/widget {:toolbar-item-width 50
+                       :dropdown-button-width 40
+                      ;;  :dropdown-button-height 140
+                       :dropdown-style-height 140
+                       :grid-view-vertical-spacing 5
+                       :grid-view-horizontal-spacing 5
+                       :render-separator-widget true} {})
       ;; (m/Text "abc")
       ))
     .debugShowCheckedModeBanner false)))
