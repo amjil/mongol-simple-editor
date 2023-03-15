@@ -20,7 +20,8 @@
   (f/widget
    :context ctx
    :let [file-path "assets/editor.html"
-         doc-height (:height other-options)
+         width  (-> m/MediaQuery (.of ctx) .-size .-width)
+         doc-width (or (:width other-options) (- width 100))
          html-controller nil]
    (m/GestureDetector
     .onTap (fn []
@@ -29,7 +30,7 @@
                  (.invokeMethod "TextInput.hide"))
              nil))
    (m/Container
-    .height doc-height
+    .width doc-width
     .decoration (:decoration other-options))
    (webview/InAppWebView
     .initialFile file-path

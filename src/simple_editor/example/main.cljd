@@ -17,24 +17,35 @@
      .appBar (m/AppBar
               .title (m/Text "Mongolian Simple Editor"))
      .body
-     (m/Align
-      .alignment m.Alignment/centerLeft
-      .child
+    ;;  (m/Align
+    ;;   .alignment m.Alignment/topLeft
+    ;;   .child
       ;; (mgl/MongolText
       ;;  " ᠳᠠᠶᠠᠭᠠᠷ ᠰᠠᠶ᠋ᠢᠨ ᠪᠠᠶ᠋ᠢᠨ᠎ᠠ ᠊ᠤᠤ?"
       ;;  .style (m/TextStyle
       ;;          .color m.Colors/blue
       ;;          .fontSize 32.0))
-      ;;  (editor-widget/editor-widget
-      ;;              {:callbacks {:on-change-content ^Function #(dart:core/print (str "<<< content = " %))}
-      ;;               :editor-options {:height 300}})
-      (toolbar/widget {:toolbar-item-width 50
-                       :dropdown-button-width 40
+      (m/Row
+       .children
+       [(toolbar/widget {:toolbar-item-width 50
+                         :dropdown-button-width 40
                       ;;  :dropdown-button-height 140
-                       :dropdown-style-height 140
-                       :grid-view-vertical-spacing 5
-                       :grid-view-horizontal-spacing 5
-                       :render-separator-widget true} {})
+                         :dropdown-style-height 140
+                         :grid-view-vertical-spacing 5
+                         :grid-view-horizontal-spacing 5
+                         :render-separator-widget true} {})
+        (m/Expanded
+         .child
+         (mgl/MongolTextField)
+        ;;  (editor-widget/editor-widget
+        ;;   {:callbacks {:on-change-content ^Function #(dart:core/print (str "<<< content = " %))}
+        ;;    :other-options {:width 300}})
+         )
+        ])
+     
+
+      
       ;; (m/Text "abc")
-      ))
+      ;; )
+     )
     .debugShowCheckedModeBanner false)))

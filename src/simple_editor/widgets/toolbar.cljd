@@ -110,21 +110,21 @@
       ;; .hint 
       .buttonStyleData
       (dropdown/ButtonStyleData
-      ;;  .elevation (:dropdown-button-elevation options)
        .width (:dropdown-button-width options)
        .height (:dropdown-button-height options)
        .padding (:dropdown-button-padding options))
       .dropdownStyleData
-       (dropdown/DropdownStyleData
-         .maxWidth (:dropdown-style-max-width options)
-         .height (:dropdown-style-height options)
+      (dropdown/DropdownStyleData
+       .maxWidth (:dropdown-style-max-width options)
+       .height (:dropdown-style-height options)
+        ;;  .elevation (:dropdown-button-elevation options)
         ;;  .offset (:dropdown-style-offset options)
-         )
+       )
       .iconStyleData
       (dropdown/IconStyleData
        .icon (or (:dropdown-icon options)
                  (m/Icon (.arrow_back_ios_new_outlined m/Icons)))
-       .iconSize (or (:dropdown-icon-size options) 
+       .iconSize (or (:dropdown-icon-size options)
                      14))
       .menuItemStyleData
       (dropdown/MenuItemStyleData
