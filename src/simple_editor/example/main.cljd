@@ -25,26 +25,25 @@
       ;;  .style (m/TextStyle
       ;;          .color m.Colors/blue
       ;;          .fontSize 32.0))
-      (m/Row
-       .children
-       [(toolbar/widget {:toolbar-item-width 50
-                         :dropdown-button-width 40
+     (m/Row
+      .children
+      [(toolbar/widget {:toolbar-item-width 50
+                        :dropdown-button-width 40
                       ;;  :dropdown-button-height 140
-                         :dropdown-style-height 140
-                         :grid-view-vertical-spacing 5
-                         :grid-view-horizontal-spacing 5
-                         :render-separator-widget true} {})
-        (m/Expanded
-         .child
-         (mgl/MongolTextField)
-        ;;  (editor-widget/editor-widget
-        ;;   {:callbacks {:on-change-content ^Function #(dart:core/print (str "<<< content = " %))}
-        ;;    :other-options {:width 300}})
-         )
-        ])
-     
+                        :dropdown-style-height 140
+                        :grid-view-vertical-spacing 5
+                        :grid-view-horizontal-spacing 5
+                        :render-separator-widget true
+                        } {})
+       (m/Expanded
+        .child
+        (editor-widget/editor-widget
+         {:callbacks {:on-change-content ^Function #(dart:core/print (str "<<< content = " %))}
+          :editor-options {:should-ensure-visible true}
+          :other-options {:width 300}}))])
 
-      
+
+
       ;; (m/Text "abc")
       ;; )
      )
