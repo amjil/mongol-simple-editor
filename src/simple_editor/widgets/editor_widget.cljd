@@ -5,7 +5,8 @@
    ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]
    [cljd.flutter.alpha2 :as f]
    ["dart:async" :as a]
-   [simple-editor.controller :as controll]))
+   [simple-editor.controller :as controll]
+   [simple-editor.widgets.toolbar :as toolbar]))
 
 (defn editor-widget2 [m]
   (m/Text "abcd"))
@@ -32,61 +33,74 @@
    (m/Container
     .width doc-width
     .decoration (:decoration other-options))
-   (webview/InAppWebView
-    .initialFile file-path
-    .onWebViewCreated (fn [^webview/InAppWebViewController inapp-controller]
+   (m/Row
+    .children
+    [(toolbar/widget {:toolbar-item-width 50
+                      :dropdown-button-width 40
+                      ;;  :dropdown-button-height 140
+                      :dropdown-style-height 140
+                      :grid-view-vertical-spacing 5
+                      :grid-view-horizontal-spacing 5
+                      :render-separator-widget true} {})
+     (m/Expanded
+      .child
+      (webview/InAppWebView
+       .initialFile file-path
+       .onWebViewCreated (fn [^webview/InAppWebViewController inapp-controller]
                         ;; (set! (.-editorController html-controller) controller)
-                        (.addJavaScriptHandler
-                         inapp-controller
-                         .handlerName "FormatSettings"
-                         .callback (fn [e]
-                                     (let [json (get e 0)]
-                                       (print json)
-                                       (when (not= (-> controller .toolbar) nil)
-                                         (-> controller .toolbar (.updateToolbar json))))))
+                           (.addJavaScriptHandler
+                            inapp-controller
+                            .handlerName "FormatSettings"
+                            .callback (fn [e]
+                                        (let [json (get e 0)]
+                                          (print json)
+                                          (when (not= (-> controller .toolbar) nil)
+                                            (-> controller .toolbar (.updateToolbar json))))))
 
-                        (.addJavaScriptHandler
-                         inapp-controller
-                         .handlerName "onChangeContent"
-                         .callback (fn [contents]
+                           (.addJavaScriptHandler
+                            inapp-controller
+                            .handlerName "onChangeContent"
+                            .callback (fn [contents]
                                     ;;  (dart:core/print "in callbacks on-change-content .... >>> ")
-                                     ((:on-change-content callbacks)
-                                      (-> contents .first .toString))))
-                        nil)
-    .initialOptions (webview/InAppWebViewGroupOptions
-                     .crossPlatform (webview/InAppWebViewOptions
-                                     .javaScriptEnabled true
-                                     .transparentBackground true
-                                     .useShouldOverrideUrlLoading true)
-                     .android (webview/AndroidInAppWebViewOptions
-                               .useHybridComposition (or (:androidUseHybridComposition editor-options) true)
-                               .loadWithOverviewMode true)
-                     .ios (webview/IOSInAppWebViewOptions
-                           .allowsInlineMediaPlayback true))
-    ;; .initialUserScripts (:mobile-initial-scripts editor-options)
+                                        ((:on-change-content callbacks)
+                                         (-> contents .first .toString))))
+                           nil)
+
+       .initialOptions (webview/InAppWebViewGroupOptions
+                        .crossPlatform (webview/InAppWebViewOptions
+                                        .javaScriptEnabled true
+                                        .transparentBackground true
+                                        .useShouldOverrideUrlLoading true)
+                        .android (webview/AndroidInAppWebViewOptions
+                                  .useHybridComposition (or (:androidUseHybridComposition editor-options) true)
+                                  .loadWithOverviewMode true)
+                        ;; .ios (webview/IOSInAppWebViewOptions
+                        ;;       .allowsInlineMediaPlayback true)
+                        )
+    ;; .initialUserScrip ts (:mobile-initial-scripts editor-options)
     ;; .contextMenu (:context-menu editor-options)
-    .onConsoleMessage  (fn [_controller message]
-                         (dart:core/print (.message message)))
-    .onWindowFocus (fn [_controller]
-                     (if (and (:should-ensure-visible editor-options)
-                              (some? (.of m/Scrollable ctx)))
-                       (let [^m/ScrollableState scrollable (.of m/Scrollable ctx)
-                             ^m/ScrollPosition position (.-position scrollable)]
-                         (.ensureVisible position (.findRenderObject ctx))
-                         nil)))
-    .onLoadStop (fn [^webview/InAppWebViewController inapp-controller uri]
-                  (let [url (.toString uri)]
-                    (when (.contains url file-path)
-                      (controll/eval-javascript
-                       inapp-controller
-                       "
-                         quilleditor.on('text-change', function(eventName, ...args) {
-                           window.flutter_inappwebview.callHandler('onChangeContent', quilleditor.root.innerHTML);
-                         }); 
-                       ")
-                      (controll/eval-javascript
-                       inapp-controller
-                       " 
+       .onConsoleMessage  (fn [_controller message]
+                            (dart:core/print (.message message)))
+       .onWindowFocus (fn [_controller]
+                        (if (and (:should-ensure-visible editor-options)
+                                 (some? (.of m/Scrollable ctx)))
+                          (let [^m/ScrollableState scrollable (.of m/Scrollable ctx)
+                                ^m/ScrollPosition position (.-position scrollable)]
+                            (.ensureVisible position (.findRenderObject ctx))
+                            nil)))
+       .onLoadStop (fn [^webview/InAppWebViewController inapp-controller uri]
+                     (let [url (.toString uri)]
+                       (when (.contains url file-path)
+                         (controll/eval-javascript
+                          inapp-controller
+                          "
+                           quilleditor.on('text-change', function(eventName, ...args) {
+                             window.flutter_inappwebview.callHandler('onChangeContent', quilleditor.root.innerHTML);
+                           }); 
+                          ")
+                         (controll/eval-javascript
+                          inapp-controller
+                          " 
                           const cursor = quilleditor.getModule('cursors');
                           cursor.createCursor('cursor', '', 'blue');
                          
@@ -122,5 +136,5 @@
                       ;;     return '';
                       ;;   } 
                       ;;  ")
-                      nil))))))
+                         nil)))))])))
 

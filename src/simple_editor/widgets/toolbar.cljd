@@ -31,10 +31,10 @@
    (m/Opacity
     .opacity (if (true? enabled) 1 0.5))
    (m/Container
-    .width ;(+ 15 (:toolbar-item-width options)))
-    (+ 0 (:toolbar-item-width options)))
-;;    (m/Padding
-;;     .padding (.all m/EdgeInsets 5))
+    .width (+ 15 (:toolbar-item-width options)))
+;;     (+ 0 (:toolbar-item-width options)))
+   (m/Padding
+    .padding (.all m/EdgeInsets 5))
    (m/CustomScrollView
     .scrollDirection (.vertical m/Axis)
     .slivers
@@ -42,7 +42,7 @@
       .hasScrollBody false
       .child
       (m/Column
-;;        .mainAxisAlignment (.spaceEvenly m/MainAxisAlignment)
+       .mainAxisAlignment (.spaceEvenly m/MainAxisAlignment)
        .children 
        (if (true? (:render-separator-widget options))
          (interpose (m/Padding
@@ -112,12 +112,13 @@
       (dropdown/ButtonStyleData
        .width (:dropdown-button-width options)
        .height (:dropdown-button-height options)
-       .padding (:dropdown-button-padding options))
+       .padding (:dropdown-button-padding options)
+       .elevation 16)
       .dropdownStyleData
       (dropdown/DropdownStyleData
        .maxWidth (:dropdown-style-max-width options)
        .height (:dropdown-style-height options)
-        ;;  .elevation (:dropdown-button-elevation options)
+         .elevation 16;(:dropdown-button-elevation options)
         ;;  .offset (:dropdown-style-offset options)
        )
       .iconStyleData
