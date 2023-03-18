@@ -3,8 +3,10 @@
    ["package:flutter/material.dart" :as m]
    ["package:pointer_interceptor/pointer_interceptor.dart" :as pi]
    ["package:dropdown_button2/src/dropdown_button2.dart" :as dropdown]
+   ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]
    ["package:mongol/mongol.dart" :as mgl]
-   [cljd.flutter.alpha2 :as f]))
+   [cljd.flutter.alpha2 :as f]
+   [simple-editor.controller :as controll]))
 
 (declare toolbar-children
          toogle-buttons)
@@ -23,7 +25,7 @@
 ;;     .spacing (:grid-view-horizontal-spacing options)
 ;;     .children (toolbar-children options state))))
 
-(defn native-scroll-widget [enabled options state]
+(defn native-scroll-widget [controller enabled options state]
   (f/widget
    (pi/PointerInterceptor)
    (m/AbsorbPointer
@@ -43,7 +45,7 @@
       .child
       (m/Column
        .mainAxisAlignment (.spaceEvenly m/MainAxisAlignment)
-       .children 
+       .children
        (if (true? (:render-separator-widget options))
          (interpose (m/Padding
                      .padding (.fromLTRB m/EdgeInsets 8 8 8 0)
@@ -51,9 +53,9 @@
                      (m/Divider
                       .height 10
                       .thickness 1
-                      .color m.Colors/grey)) 
-                    (toolbar-children options state))
-         (toolbar-children options state))
+                      .color m.Colors/grey))
+                    (toolbar-children controller options state))
+         (toolbar-children controller options state))
       ;;  [(m/Text "aa") (m/Text "bb")]
        ))])))
 
@@ -61,7 +63,7 @@
 ;;   (m/Text "abc"))
 
 (defn widget
-  [options callbacks]
+  [controller options callbacks]
   (f/widget
    :let [state (atom {:enabled true
                       :format "p"
@@ -73,8 +75,7 @@
   ;;  (if (= :native-grid (:toolbar-type options))
   ;;    (native-grid-widget enabled options state)
   ;;    (native-scroll-widget enabled options state))
-   (native-scroll-widget enabled options state)
-   ))
+   (native-scroll-widget controller enabled options state)))
 
 (defn toolbar-item-container 
   [options child]
@@ -124,7 +125,7 @@
       .iconStyleData
       (dropdown/IconStyleData
        .icon (or (:dropdown-icon options)
-                 (m/Icon (.arrow_back_ios_new_outlined m/Icons)))
+                 (m/Icon (.keyboard_arrow_right m/Icons)))
        .iconSize (or (:dropdown-icon-size options)
                      14))
       .menuItemStyleData
@@ -133,7 +134,7 @@
                   40)))))))
 
 (defn toolbar-children
-  [options state]
+  [controller options state]
   [(toolbar-item-container
     options
     (toolbar-dropdown-button
@@ -272,18 +273,20 @@
                        .style (m/TextStyle .fontFamily "Courier"))))]
      state :font-size))
    (toggle-buttons
+    controller
     options state :font [(m/Icon (.format_bold m/Icons))
                          (m/Icon (.format_italic m/Icons))
                          (m/Icon (.format_underline m/Icons))
                          (m/Icon (.format_clear m/Icons))])
    (toggle-buttons
+    controller
     options state :misc-font [(m/Icon (.format_strikethrough m/Icons))
                               (m/Icon (.superscript m/Icons))
                               (m/Icon (.subscript m/Icons))])
    ])
 
 (defn toggle-buttons 
-  [options state skey group-items]
+  [controller options state skey group-items]
   (f/widget
    :watch [{font skey} state]
    (m/ToggleButtons
@@ -306,12 +309,31 @@
     .renderBorder (or (:toolbar-button-render-border options) false)
     ;; .textStyle (:toolbar-text-style options)
     .onPressed (fn [i]
+                 
                  (dart:core/print (str "onPressed >>> " i))
                  (swap! state assoc skey (assoc
-                                         (get @state skey)
-                                         i
-                                         (not
-                                          (get-in @state [skey i])))))
+                                          (get @state skey)
+                                          i
+                                          (not
+                                           (get-in @state [skey i]))))
+                 (dart:core/print (str "state [] = >>> " (name skey) " -- " (get-in @state [skey i])))
+                 (let [value (get-in @state [skey i])
+                       inapp-controller @controller] 
+                   (if (nil? @controller)
+                     (dart:core/print "onPressed >>>  got nil value")
+                     (await
+                      (controll/set-format
+                       inapp-controller
+                       (condp = (name skey)
+                         "font"
+                         (condp = i
+                           0 "bold"
+                           1 "italic"
+                           2 "underline"
+                           3 "strike"))
+                ;;     (name skey)
+                       (if (true? value) "true" "false")))))
+                 )
     .isSelected font 
     .children group-items)))
 
