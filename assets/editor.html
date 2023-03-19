@@ -58,6 +58,10 @@
 
       Quill.register('modules/cursors', QuillCursors);
       
+      var Size = Quill.import('attributors/style/size');
+      Size.whitelist = ['11px', '13px', '16px', '19px', '24px', '32px', '48px'];
+      Quill.register(Size, true);
+      
       var quilleditor = new Quill('#editor', {
             modules: {
               toolbar: '#toolbar-container',
@@ -83,6 +87,23 @@
       const table = quilleditor.getModule('table');
 
       // quilleditor.enable(false);
+
+
+      const cursor = quilleditor.getModule('cursors');
+                          cursor.createCursor('cursor', '', 'blue');
+                         
+                         
+                          function selectionChangeHandler(cursors) {
+
+                            return function(range, oldRange, source) {
+                              cursors.moveCursor('cursor', range);
+                              onRangeChanged();
+                            }
+                          };
+                        
+                          quilleditor.on('selection-change', selectionChangeHandler(cursor));
+
+
   </script>
 </body>
 </html>
