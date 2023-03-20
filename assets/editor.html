@@ -37,7 +37,6 @@
     <!-- Create the toolbar container -->
     <div id="toolbar-container"></div>
     <div id="editor">
-        Hey Man! eeee
     </div>
     <!-- Include the Quill library -->
     <script src="quill.min.js"></script>
@@ -87,22 +86,6 @@
       const table = quilleditor.getModule('table');
 
       // quilleditor.enable(false);
-
-
-      const cursor = quilleditor.getModule('cursors');
-                          cursor.createCursor('cursor', '', 'blue');
-                         
-                         
-                          function selectionChangeHandler(cursors) {
-
-                            return function(range, oldRange, source) {
-                              cursors.moveCursor('cursor', range);
-                              onRangeChanged();
-                            }
-                          };
-                        
-                          quilleditor.on('selection-change', selectionChangeHandler(cursor));
-
 
   </script>
 </body>

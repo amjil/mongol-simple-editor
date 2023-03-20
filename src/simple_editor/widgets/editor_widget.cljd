@@ -48,8 +48,6 @@
          .onWebViewCreated (fn [^webview/InAppWebViewController inapp-controller]
                              (reset! controller inapp-controller)
                              (dart:core/print "init controller !!!")
-                             (if (nil? @controller)
-                               (dart:core/print "html-controller is still nil"))
                              (.addJavaScriptHandler
                               inapp-controller
                               .handlerName "FormatSettings"
@@ -92,7 +90,7 @@
     ;; .initialUserScrip ts (:mobile-initial-scripts editor-options)
     ;; .contextMenu (:context-menu editor-options)
          .onConsoleMessage  (fn [_controller message]
-                              (dart:core/print (.message message)))
+                              (dart:core/print (str (.message message))))
          .onWindowFocus (fn [_controller]
                           (if (and (:should-ensure-visible editor-options)
                                    (some? (.of m/Scrollable ctx)))
