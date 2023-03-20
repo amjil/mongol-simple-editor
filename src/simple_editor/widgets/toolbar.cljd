@@ -68,7 +68,7 @@
    :let [state (atom {:enabled true
                       :format "p"
                       :font-family "Courier New"
-                      :font-size 16
+                      :size 16
                       :font [false false false false]
                       :misc-font [false false false]})]
    :watch [{:keys [enabled]} state]
@@ -96,7 +96,7 @@
     .child child)))
 
 (defn toolbar-dropdown-button 
-  [options items state skey]
+  [controller options items state skey]
   (f/widget
    :watch [{selected skey} state]
    (toolbar-item-container
@@ -107,7 +107,9 @@
       .items items
       .value selected
       .onChanged (fn [v]
-                   (swap! state assoc skey v))
+                   (dart:core/print (str "dropdownbutton onChanged >>>> " (name skey) " " v))
+                   (swap! state assoc skey v)
+                   (controll/set-format @controller (name skey) (str "'" v "px'")))
       ;; .hint 
       .buttonStyleData
       (dropdown/ButtonStyleData
@@ -138,6 +140,7 @@
   [(toolbar-item-container
     options
     (toolbar-dropdown-button
+     controller
      options
      [(m/DropdownMenuItem
        .value "p"
@@ -195,6 +198,7 @@
    (toolbar-item-container
     options
     (toolbar-dropdown-button
+     controller
      options
      [(m/DropdownMenuItem
        .value "Courier New"
@@ -221,6 +225,7 @@
    (toolbar-item-container
     options
     (toolbar-dropdown-button
+     controller
      options
      [(m/DropdownMenuItem
        .value 11
@@ -271,7 +276,7 @@
                .child (mgl/MongolText
                        (str 48 " px")
                        .style (m/TextStyle .fontFamily "Courier"))))]
-     state :font-size))
+     state :size))
    (toggle-buttons
     controller
     options state :font [(m/Icon (.format_bold m/Icons))
@@ -288,7 +293,7 @@
 (defn toggle-buttons 
   [controller options state skey group-items]
   (f/widget
-   :watch [{font skey} state]
+   :watch [{params skey} state]
    (m/ToggleButtons
     .direction m.Axis/vertical
     .constraints
@@ -330,10 +335,14 @@
                            0 "bold"
                            1 "italic"
                            2 "underline"
-                           3 "strike"))
+                           3 "strike")
+
+                         "misc-font"
+                         (condp = i
+                           0 "strike"))
                 ;;     (name skey)
                        (if (true? value) "true" "false")))))
                  )
-    .isSelected font 
+    .isSelected params 
     .children group-items)))
 

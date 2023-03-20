@@ -2,6 +2,8 @@
 
 A new Flutter project.
 
+![image](mongol-simple-editor.gif)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
