@@ -84,9 +84,8 @@
                           .android (webview/AndroidInAppWebViewOptions
                                     .useHybridComposition (or (:androidUseHybridComposition editor-options) true)
                                     .loadWithOverviewMode true)
-                        ;; .ios (webview/IOSInAppWebViewOptions
-                        ;;       .allowsInlineMediaPlayback true)
-                          )
+                          .ios (webview/IOSInAppWebViewOptions
+                                .allowsInlineMediaPlayback true))
     ;; .initialUserScrip ts (:mobile-initial-scripts editor-options)
     ;; .contextMenu (:context-menu editor-options)
          .onConsoleMessage  (fn [_controller message]
@@ -101,55 +100,6 @@
          .onLoadStop (fn [^webview/InAppWebViewController inapp-controller uri]
                        (let [url (.toString uri)]
                          (when (.contains url file-path)
-                           (controll/inapp-format-parser inapp-controller)
-                           (controll/inapp-on-range-content inapp-controller)
-                           (controll/inapp-init-set-format inapp-controller)
-                           (controll/eval-javascript
-                            inapp-controller
-                            "
-                           quilleditor.on('text-change', function(eventName, ...args) {
-                             window.flutter_inappwebview.callHandler('onChangeContent', quilleditor.root.innerHTML);
-                             onRangeChanged();
-                           }); 
-                          ")
-                           (controll/eval-javascript
-                            inapp-controller
-                            " 
-                          const cursor = quilleditor.getModule('cursors');
-                          cursor.createCursor('cursor', '', 'blue');
-                         
-                         
-                          function selectionChangeHandler(cursors) {
-
-                            return function(range, oldRange, source) {
-                              cursors.moveCursor('cursor', range);
-                              onRangeChanged();
-                            }
-                          };
-                        
-                          quilleditor.on('selection-change', selectionChangeHandler(cursor));
-
-                        ")
-                      ;; (controll/eval-javascript
-                      ;;  inapp-controller
-                      ;;  "
-                      ;;   function setFormat(format, value) {
-                      ;;     if(format == 'clean') {
-                      ;;       var range = quilleditor.getSelection(true);
-                      ;;       if(range) {
-                      ;;         if(range.length == 0) {
-                      ;;           quilleditor.removeFormat(range.index, quilleditor.root.innerHTML.length);
-                      ;;         } else {
-                      ;;           quilleditor.removeFormat(range.index, range.length);
-                      ;;         }
-                      ;;       } else {
-                      ;;         quilleditor.format('clean');
-                      ;;       }
-                      ;;     } else {
-                      ;;       quilleditor.format(format, value);
-                      ;;     }
-                      ;;     return '';
-                      ;;   } 
-                      ;;  ")
+                           (dart:core/print "onLoadStop >>>")
                            nil)))))]))))
 
