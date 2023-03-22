@@ -7,8 +7,8 @@
   <!-- <link href="quill-cursors.css" rel="stylesheet"> -->
   <style>
     @font-face {
-       font-family: 'MongolianBaiZheng';
-       src: local('MongolianBaiZheng'), url('fonts/MongolianBaiZheng.ttf');
+      font-family: 'MongolianBaiZheng';
+      src: local('MongolianBaiZheng'), url('fonts/MongolianBaiZheng.ttf');
     }
     html,body {
       height: 100%;
@@ -145,6 +145,7 @@
         } else {
           quilleditor.format(format, value);
         }
+        onRangeChanged();
         return '';
       } 
 

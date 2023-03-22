@@ -4,7 +4,9 @@
    ["package:flutter/services.dart" :as services]
    ["package:flutter_inappwebview/flutter_inappwebview.dart" :as webview]
    [cljd.flutter.alpha2 :as f]
+   [clojure.walk :as walk]
    ["dart:async" :as a]
+   ["dart:convert" :as convert]
    [simple-editor.controller :as controll]
    [simple-editor.widgets.toolbar :as toolbar]))
 
@@ -34,8 +36,9 @@
       .children
       [(toolbar/widget
         controller
-        {:toolbar-item-width 50
-         :dropdown-button-width 40
+        {:toolbar-type :native-grid
+         :toolbar-item-width 32
+         :dropdown-button-width 32
                       ;;  :dropdown-button-height 140
          :dropdown-style-height 140
          :grid-view-vertical-spacing 5
@@ -70,7 +73,9 @@
                               .handlerName "onFormatChange"
                               .callback (fn [contents]
                                           (dart:core/print "in callbacks on-format-change .... >>> ")
-                                          (dart:core/print contents)
+                                          (let [data (walk/keywordize-keys
+                                                      (into {} (convert/jsonDecode (str contents))))]
+                                            )
                                         ;; ((:on-change-content callbacks)
                                         ;;  (-> contents .first .toString))
                                           ))

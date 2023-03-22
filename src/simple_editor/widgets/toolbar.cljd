@@ -11,19 +11,31 @@
 (declare toolbar-children
          toogle-buttons)
 
-;; (defn native-grid-widget [enabled options state]
-;;   (f/widget
-;;    (pi/PointerInterceptor)
-;;    (m/AbsorbPointer
-;;     .absorbing (not enabled))
-;;    (m/Opacity
-;;     .opacity (if (true? enabled) 1 0.5))
-;;    (m/Padding
-;;     .padding (.all m/EdgeInsets 5))
-;;    (m/Wrap
-;;     .runSpacing (:grid-view-vertical-spacing options)
-;;     .spacing (:grid-view-horizontal-spacing options)
-;;     .children (toolbar-children options state))))
+(defn native-grid-widget [controller enabled options state]
+  (f/widget
+   (pi/PointerInterceptor)
+   (m/AbsorbPointer
+    .absorbing (not enabled))
+   (m/Opacity
+    .opacity (if (true? enabled) 1 0.5))
+   (m/Padding
+    .padding (.all m/EdgeInsets 5))
+   (m/Wrap
+;;     .alignment m.Alignment/center
+    .crossAxisAlignment m.WrapCrossAlignment/center
+    .direction m.Axis/vertical
+    .runSpacing (:grid-view-vertical-spacing options)
+    .spacing (:grid-view-horizontal-spacing options)
+    .children (if (true? (:render-separator-widget options))
+                (interpose (m/Padding
+                            .padding (.fromLTRB m/EdgeInsets 8 8 8 0)
+                            .child
+                            (m/Divider
+                             .height 10
+                             .thickness 1
+                             .color m.Colors/grey))
+                           (toolbar-children controller options state))
+                (toolbar-children controller options state)))))
 
 (defn native-scroll-widget [controller enabled options state]
   (f/widget
@@ -55,27 +67,21 @@
                       .thickness 1
                       .color m.Colors/grey))
                     (toolbar-children controller options state))
-         (toolbar-children controller options state))
-      ;;  [(m/Text "aa") (m/Text "bb")]
-       ))])))
-
-;; (defn widget [_ _]
-;;   (m/Text "abc"))
+         (toolbar-children controller options state))))])))
 
 (defn widget
   [controller options callbacks]
   (f/widget
    :let [state (atom {:enabled true
-                      :format "p"
+                      :block "p"
                       :font-family "Courier New"
-                      :size 16
+                      :size "16px"
                       :font [false false false false]
                       :misc-font [false false false]})]
    :watch [{:keys [enabled]} state]
-  ;;  (if (= :native-grid (:toolbar-type options))
-  ;;    (native-grid-widget enabled options state)
-  ;;    (native-scroll-widget enabled options state))
-   (native-scroll-widget controller enabled options state)))
+   (if (= :native-grid (:toolbar-type options))
+     (native-grid-widget controller enabled options state)
+     (native-scroll-widget controller enabled options state))))
 
 (defn toolbar-item-container 
   [options child]
@@ -109,7 +115,9 @@
       .onChanged (fn [v]
                    (dart:core/print (str "dropdownbutton onChanged >>>> " (name skey) " " v))
                    (swap! state assoc skey v)
-                   (controll/set-format @controller (name skey) (str "'" v "px'")))
+                   (if (= (name skey) "font-family")
+                     (controll/set-format @controller "font" "MongolianBaiZheng")
+                     (controll/set-format @controller (name skey) (str "'" v "'"))))
       ;; .hint 
       .buttonStyleData
       (dropdown/ButtonStyleData
@@ -129,11 +137,11 @@
        .icon (or (:dropdown-icon options)
                  (m/Icon (.keyboard_arrow_right m/Icons)))
        .iconSize (or (:dropdown-icon-size options)
-                     14))
+                     12))
       .menuItemStyleData
       (dropdown/MenuItemStyleData
        .width (or (:dropdown-item-width options)
-                  40)))))))
+                  32)))))))
 
 (defn toolbar-children
   [controller options state]
@@ -194,7 +202,7 @@
                .child (mgl/MongolText "Header 6"
                                       .style (m/TextStyle .fontWeight
                                                           (.bold m/FontWeight) .fontSize 11))))]
-     state :format))
+     state :block))
    (toolbar-item-container
     options
     (toolbar-dropdown-button
@@ -228,54 +236,48 @@
      controller
      options
      [(m/DropdownMenuItem
-       .value 11
+       .value "11px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 11 " px")
+                       "11 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
       (m/DropdownMenuItem
-       .value 13
+       .value "13px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 13 " px")
+                       "13 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
       (m/DropdownMenuItem
-       .value 16
+       .value "16px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 16 " px")
+                       "16 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
       (m/DropdownMenuItem
-       .value 19
+       .value "19px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 19 " px")
+                       "19 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
       (m/DropdownMenuItem
-       .value 24
+       .value "24px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 24 " px")
+                       "24 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
       (m/DropdownMenuItem
-       .value 32
+       .value "32px"
        .alignment m.AlignmentDirectional/topCenter
        .child (pi/PointerInterceptor
                .child (mgl/MongolText
-                       (str 32 " px")
+                       "32 px"
                        .style (m/TextStyle .fontFamily "Courier"))))
-      (m/DropdownMenuItem
-       .value 48
-       .alignment m.AlignmentDirectional/topCenter
-       .child (pi/PointerInterceptor
-               .child (mgl/MongolText
-                       (str 48 " px")
-                       .style (m/TextStyle .fontFamily "Courier"))))]
+      ]
      state :size))
    (toggle-buttons
     controller
